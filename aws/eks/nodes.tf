@@ -20,6 +20,12 @@ resource "aws_eks_node_group" "this" {
     max_unavailable = 1
   }
 
+  lifecycle {
+    ignore_changes = [
+      scaling_config[0].desired_size
+    ]
+  }
+
   labels = {
     role = each.key
   }
