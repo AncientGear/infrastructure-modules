@@ -25,7 +25,7 @@ variable "private_app_subnet_tags" {
 
 variable "private_db_subnets" {
   description = "CIDR ranges for private db subnets."
-  type       = list(string)
+  type        = list(string)
 }
 
 variable "private_db_subnet_tags" {
