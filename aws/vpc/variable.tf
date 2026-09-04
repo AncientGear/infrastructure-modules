@@ -17,6 +17,11 @@ variable "azs" {
 variable "private_app_subnets" {
   description = "CIDR ranges for private app subnets."
   type        = list(string)
+
+  validation {
+    condition     = length(var.private_app_subnets) == length(var.azs)
+    error_message = "private_app_subnets must contain one CIDR range for each availability zone in azs."
+  }
 }
 variable "private_app_subnet_tags" {
   description = "Private subnet tags."
@@ -26,6 +31,11 @@ variable "private_app_subnet_tags" {
 variable "private_db_subnets" {
   description = "CIDR ranges for private db subnets."
   type        = list(string)
+
+  validation {
+    condition     = length(var.private_db_subnets) == length(var.azs)
+    error_message = "private_db_subnets must contain one CIDR range for each availability zone in azs."
+  }
 }
 
 variable "private_db_subnet_tags" {
@@ -36,6 +46,11 @@ variable "private_db_subnet_tags" {
 variable "public_subnets" {
   description = "CIDR ranges for public subnets."
   type        = list(string)
+
+  validation {
+    condition     = length(var.public_subnets) == length(var.azs)
+    error_message = "public_subnets must contain one CIDR range for each availability zone in azs."
+  }
 }
 
 variable "public_subnet_tags" {
