@@ -57,18 +57,18 @@ variable "multi_az_enable" {
 }
 
 variable "vpc_id" {
-  type    = string
+  type = string
 }
 
 variable "private_db_subnet_ids" {
-  type    = list(string)
+  type = list(string)
 }
 
 variable "allowed_cidr_blocks" {
-  type    = list(string)
+  type = list(string)
 }
 
 variable "env" {
-  type = string
+  type    = string
   default = "dev"
 }
