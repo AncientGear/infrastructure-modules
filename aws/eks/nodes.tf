@@ -26,8 +26,21 @@ resource "aws_eks_node_group" "this" {
     ]
   }
 
-  labels = {
-    role = each.key
+  labels = merge(
+    {
+      role = each.key
+    },
+    try(each.value.labels, {})
+  )
+
+  dynamic "taint" {
+    for_each = try(each.value.taints, [])
+
+    content {
+      key    = taint.value.key
+      value  = taint.value.value
+      effect = taint.value.effect
+    }
   }
 
   depends_on = [aws_iam_role_policy_attachment.nodes]
