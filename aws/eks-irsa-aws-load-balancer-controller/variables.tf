@@ -14,8 +14,9 @@ variable "aws_region" {
 }
 
 variable "account_id" {
-  description = "The AWS account ID where the EKS cluster is deployed"
+  description = "The AWS account ID where the EKS cluster is deployed. When null, it is discovered from the active AWS caller identity."
   type        = string
+  default     = null
 }
 
 variable "oidc_provider_arn" {

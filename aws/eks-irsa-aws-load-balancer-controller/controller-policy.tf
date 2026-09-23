@@ -108,7 +108,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*"]
+    resources = ["arn:aws:ec2:${var.aws_region}:${local.account_id}:security-group/*"]
 
     condition {
       test     = "StringEquals"
@@ -127,7 +127,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*"]
+    resources = ["arn:aws:ec2:${var.aws_region}:${local.account_id}:security-group/*"]
 
     condition {
       test     = "StringEquals"
@@ -152,7 +152,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*"]
+    resources = ["arn:aws:ec2:${var.aws_region}:${local.account_id}:security-group/*"]
 
     condition {
       test     = "StringEquals"
@@ -172,13 +172,13 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:ec2:${var.aws_region}:${var.account_id}:security-group/*"]
+    resources = ["arn:aws:ec2:${var.aws_region}:${local.account_id}:security-group/*"]
 
     condition {
       test     = "ArnEquals"
       variable = "ec2:Vpc"
       values = [
-        "arn:aws:ec2:${var.aws_region}:${var.account_id}:vpc/${var.vpc_id}"
+        "arn:aws:ec2:${var.aws_region}:${local.account_id}:vpc/${var.vpc_id}"
       ]
     }
   }
@@ -231,7 +231,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:loadbalancer/app/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:loadbalancer/app/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -256,7 +256,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:targetgroup/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:targetgroup/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -281,7 +281,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:loadbalancer/app/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:loadbalancer/app/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -301,7 +301,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:targetgroup/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:targetgroup/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -335,7 +335,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener/app/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener/app/*/*/*"]
   }
 
   // Create Rules permissions
@@ -362,7 +362,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener-rule/app/*/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener-rule/app/*/*/*/*"]
   }
 
   // Allow add/remove tags for listener permissions
@@ -376,7 +376,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener/app/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener/app/*/*/*"]
   }
 
   // Allow add/remove tags for listener rule permissions
@@ -390,7 +390,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener-rule/app/*/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener-rule/app/*/*/*/*"]
   }
 
   // Allow add listener certificates permissions
@@ -403,7 +403,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener/app/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener/app/*/*/*"]
   }
 
   // Allow remove listener certificates permissions
@@ -416,7 +416,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener/app/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener/app/*/*/*"]
   }
 
   // Allow set rule priorities permissions
@@ -429,7 +429,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:listener-rule/app/*/*/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:listener-rule/app/*/*/*/*"]
   }
 
   // Allow modify/delete ALB
@@ -448,7 +448,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:loadbalancer/app/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:loadbalancer/app/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -471,7 +471,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:targetgroup/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:targetgroup/*/*"]
 
     condition {
       test     = "StringEquals"
@@ -491,7 +491,7 @@ data "aws_iam_policy_document" "aws_load_balancer_controller" {
 
     effect = "Allow"
 
-    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${var.account_id}:targetgroup/*/*"]
+    resources = ["arn:aws:elasticloadbalancing:${var.aws_region}:${local.account_id}:targetgroup/*/*"]
 
     condition {
       test     = "StringEquals"
