@@ -6,9 +6,9 @@ resource "aws_ecr_lifecycle_policy" "this" {
   "rules": [
     {
       "rulePriority": 1,
-      "description": "Keep last 20 images",
+      "description": "Keep last 20 images regardless of tag format",
       "selection": {
-        "tagStatus": "tagged",
+        "tagStatus": "any",
         "countType": "imageCountMoreThan",
         "countNumber": 20
       },
