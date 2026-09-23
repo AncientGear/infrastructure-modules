@@ -34,8 +34,9 @@ variable "username" {
 }
 
 variable "parameter_group_name" {
-  type    = string
-  default = "default.postgres15.3"
+  description = "Optional DB parameter group name. When null, AWS uses the engine default parameter group."
+  type        = string
+  default     = null
 }
 
 variable "skip_final_snapshot" {
