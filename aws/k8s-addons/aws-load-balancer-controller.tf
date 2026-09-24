@@ -43,9 +43,14 @@ resource "helm_release" "aws_load_balancer_controller" {
       create = false
     }
 
-    image = {
-      tag = local.aws_load_balancer_controller_controller_version
-    }
+    image = merge(
+      {
+        tag = local.aws_load_balancer_controller_controller_version
+      },
+      var.aws_load_balancer_controller.image_repository == null ? {} : {
+        repository = var.aws_load_balancer_controller.image_repository
+      }
+    )
 
     nodeSelector = var.aws_load_balancer_controller.node_selector
     tolerations  = var.aws_load_balancer_controller.tolerations

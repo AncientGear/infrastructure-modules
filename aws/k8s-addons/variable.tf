@@ -36,6 +36,7 @@ variable "aws_load_balancer_controller" {
     role_arn             = optional(string)
     namespace            = optional(string, "kube-system")
     service_account_name = optional(string, "aws-load-balancer-controller")
+    image_repository     = optional(string)
     node_selector        = optional(map(string), {})
     tolerations = optional(list(object({
       key      = string
@@ -66,5 +67,13 @@ variable "aws_load_balancer_controller" {
       length(trimspace(var.aws_load_balancer_controller.service_account_name)) > 0
     )
     error_message = "aws_load_balancer_controller.namespace and service_account_name must not be empty."
+  }
+
+  validation {
+    condition = (
+      try(var.aws_load_balancer_controller.image_repository, null) == null ||
+      try(trimspace(var.aws_load_balancer_controller.image_repository), "") != ""
+    )
+    error_message = "aws_load_balancer_controller.image_repository must not be empty when set."
   }
 }
