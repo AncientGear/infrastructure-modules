@@ -36,6 +36,13 @@ variable "aws_load_balancer_controller" {
     role_arn             = optional(string)
     namespace            = optional(string, "kube-system")
     service_account_name = optional(string, "aws-load-balancer-controller")
+    node_selector        = optional(map(string), {})
+    tolerations = optional(list(object({
+      key      = string
+      operator = optional(string, "Equal")
+      value    = optional(string)
+      effect   = string
+    })), [])
   })
 
   default = {

@@ -47,6 +47,9 @@ resource "helm_release" "aws_load_balancer_controller" {
       tag = local.aws_load_balancer_controller_controller_version
     }
 
+    nodeSelector = var.aws_load_balancer_controller.node_selector
+    tolerations  = var.aws_load_balancer_controller.tolerations
+
     serviceAccount = {
       create = true
       name   = var.aws_load_balancer_controller.service_account_name
