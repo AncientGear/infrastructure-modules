@@ -18,6 +18,24 @@ variable "subnet_ids" {
   type        = list(string)
 }
 
+variable "endpoint_private_access" {
+  description = "Whether the Amazon EKS private API server endpoint is enabled."
+  type        = bool
+  default     = false
+}
+
+variable "endpoint_public_access" {
+  description = "Whether the Amazon EKS public API server endpoint is enabled."
+  type        = bool
+  default     = true
+}
+
+variable "public_access_cidrs" {
+  description = "CIDR blocks allowed to access the public Amazon EKS API server endpoint."
+  type        = list(string)
+  default     = ["0.0.0.0/0"]
+}
+
 variable "node_iam_policies" {
   description = "List of IAM Policies to attach to EKS-managed nodes."
   type        = map(any)
