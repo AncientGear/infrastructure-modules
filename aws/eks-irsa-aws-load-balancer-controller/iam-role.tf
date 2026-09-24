@@ -6,6 +6,8 @@ resource "aws_iam_role" "this" {
 }
 
 resource "aws_iam_role_policy_attachment" "this" {
+  for_each = aws_iam_policy.aws_load_balancer_controller
+
   role       = aws_iam_role.this.name
-  policy_arn = aws_iam_policy.aws_load_balancer_controller.arn
+  policy_arn = each.value.arn
 }

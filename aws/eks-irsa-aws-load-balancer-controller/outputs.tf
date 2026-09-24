@@ -19,6 +19,11 @@ output "service_account_name" {
 }
 
 output "policy_arn" {
-  value       = aws_iam_policy.aws_load_balancer_controller.arn
-  description = "The ARN of the IAM policy for the AWS Load Balancer Controller"
+  value       = values(aws_iam_policy.aws_load_balancer_controller)[0].arn
+  description = "The ARN of the first IAM policy attached to the AWS Load Balancer Controller role. Prefer policy_arns for the complete set."
+}
+
+output "policy_arns" {
+  value       = { for name, policy in aws_iam_policy.aws_load_balancer_controller : name => policy.arn }
+  description = "ARNs of all IAM policies attached to the AWS Load Balancer Controller role."
 }
