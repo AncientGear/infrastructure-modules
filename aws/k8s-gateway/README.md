@@ -62,7 +62,7 @@ This module does **not** output an ALB ARN. AWS Load Balancer Controller creates
 
 ## Internal HTTPS ALB behavior
 
-The Gateway declares `tls.mode: Terminate` for its HTTPS listener, while `LoadBalancerConfiguration` explicitly requests an `internal`, IPv4 ALB in the supplied private subnets and supplies the regional ACM certificate ARN as the default certificate for `HTTPS:443`. No Kubernetes Secret `certificateRef` is created: AWS Load Balancer Controller's `defaultCertificate` extension binds the ACM certificate. The Gateway exposes no HTTP listener and accepts only `HTTPRoute` attachments; it does not create NLB resources.
+The Gateway declares an HTTPS listener on port 443 without a `tls` block. `LoadBalancerConfiguration` explicitly requests an `internal`, IPv4 ALB in the supplied private subnets and supplies the regional ACM certificate ARN as the default certificate for `HTTPS:443`. AWS Load Balancer Controller uses this `defaultCertificate` configuration; the Gateway does not use `certificateRefs` or placeholder TLS options. The Gateway exposes no HTTP listener and accepts only `HTTPRoute` attachments; it does not create NLB resources.
 
 ## Apply order and reconciliation
 
