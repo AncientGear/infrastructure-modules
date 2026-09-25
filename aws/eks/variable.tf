@@ -52,6 +52,31 @@ variable "node_groups" {
   type        = map(any)
 }
 
+variable "coredns" {
+  description = "Optional management of the EKS CoreDNS add-on. Disabled by default."
+  type = object({
+    enabled                   = optional(bool, false)
+    addon_version             = optional(string)
+    corefile                  = optional(string)
+    replica_count             = optional(number, 2)
+    workload_toleration_value = optional(string)
+  })
+  default = {}
+
+  validation {
+    condition = !var.coredns.enabled || (
+      (var.coredns.addon_version == null ? true : length(trimspace(var.coredns.addon_version)) > 0) &&
+      (var.coredns.workload_toleration_value == null ? true : length(trimspace(var.coredns.workload_toleration_value)) > 0)
+    )
+    error_message = "When CoreDNS is enabled, provided addon_version and workload_toleration_value must not be empty."
+  }
+
+  validation {
+    condition     = var.coredns.replica_count > 0 && var.coredns.replica_count == floor(var.coredns.replica_count)
+    error_message = "CoreDNS replica_count must be a positive integer."
+  }
+}
+
 variable "enable_irsa" {
   description = "Determines whether to create an OpenID Connect Provider for EKS to enable IRSA"
   type        = bool
