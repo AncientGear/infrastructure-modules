@@ -1,5 +1,5 @@
 variable "platform_namespace" {
-  description = "Namespace Terraform creates for the shared platform Gateway and its LoadBalancerConfiguration."
+  description = "Existing namespace containing the shared platform Gateway and its LoadBalancerConfiguration; owned outside this module."
   type        = string
   default     = "gateway-system"
 
@@ -70,7 +70,7 @@ variable "private_subnet_ids" {
 }
 
 variable "authorized_application_namespaces" {
-  description = "Non-empty set of application namespaces Terraform creates and authorizes to attach HTTPRoutes to the Gateway."
+  description = "Non-empty set of existing application namespaces authorized to attach HTTPRoutes to the Gateway; owned outside this module."
   type        = set(string)
 
   validation {

@@ -4,31 +4,6 @@ locals {
   }
 }
 
-resource "kubernetes_namespace_v1" "platform" {
-  metadata {
-    name = var.platform_namespace
-  }
-
-  lifecycle {
-    # Namespaces can contain application-managed resources outside this module.
-    prevent_destroy = true
-  }
-}
-
-resource "kubernetes_namespace_v1" "authorized_application" {
-  for_each = var.authorized_application_namespaces
-
-  metadata {
-    name   = each.value
-    labels = local.route_authorization_label
-  }
-
-  lifecycle {
-    # Removing a namespace from the input set must require an explicit state/lifecycle decision.
-    prevent_destroy = true
-  }
-}
-
 resource "kubernetes_manifest" "gateway_class" {
   manifest = {
     apiVersion = "gateway.networking.k8s.io/v1"
@@ -48,7 +23,7 @@ resource "kubernetes_manifest" "load_balancer_configuration" {
     kind       = "LoadBalancerConfiguration"
     metadata = {
       name      = var.load_balancer_configuration_name
-      namespace = kubernetes_namespace_v1.platform.metadata[0].name
+      namespace = var.platform_namespace
     }
     spec = {
       scheme        = "internal"
@@ -68,7 +43,6 @@ resource "kubernetes_manifest" "load_balancer_configuration" {
     }
   }
 
-  depends_on = [kubernetes_namespace_v1.platform]
 }
 
 resource "kubernetes_manifest" "gateway" {
@@ -77,7 +51,7 @@ resource "kubernetes_manifest" "gateway" {
     kind       = "Gateway"
     metadata = {
       name      = var.gateway_name
-      namespace = kubernetes_namespace_v1.platform.metadata[0].name
+      namespace = var.platform_namespace
     }
     spec = {
       gatewayClassName = var.gateway_class_name
@@ -116,6 +90,5 @@ resource "kubernetes_manifest" "gateway" {
   depends_on = [
     kubernetes_manifest.gateway_class,
     kubernetes_manifest.load_balancer_configuration,
-    kubernetes_namespace_v1.authorized_application,
   ]
 }

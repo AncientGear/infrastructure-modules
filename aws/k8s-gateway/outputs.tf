@@ -1,10 +1,10 @@
 output "platform_namespace" {
-  description = "Terraform-managed namespace containing the Gateway and LoadBalancerConfiguration."
-  value       = kubernetes_namespace_v1.platform.metadata[0].name
+  description = "Namespace containing the Gateway and LoadBalancerConfiguration; owned outside this module."
+  value       = var.platform_namespace
 }
 
 output "authorized_application_namespaces" {
-  description = "Terraform-managed namespaces permitted to attach HTTPRoutes to the Gateway."
+  description = "Namespace names permitted to attach HTTPRoutes to the Gateway; owned outside this module."
   value       = sort(tolist(var.authorized_application_namespaces))
 }
 
