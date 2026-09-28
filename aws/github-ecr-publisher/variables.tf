@@ -8,14 +8,18 @@ variable "oidc_provider_arn" {
   type        = string
 }
 
-variable "github_repository" {
-  description = "GitHub repository in owner/repository format."
+variable "github_subject" {
+  description = "Exact GitHub OIDC subject allowed to assume the role."
   type        = string
-}
 
-variable "github_branch" {
-  description = "Exact branch allowed to assume the role."
-  type        = string
+  validation {
+    condition = (
+      startswith(var.github_subject, "repo:") &&
+      !strcontains(var.github_subject, "*") &&
+      !strcontains(var.github_subject, "?")
+    )
+    error_message = "Provide an exact repository subject without wildcards."
+  }
 }
 
 variable "tags" {
