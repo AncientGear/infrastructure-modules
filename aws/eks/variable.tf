@@ -82,3 +82,18 @@ variable "enable_irsa" {
   type        = bool
   default     = true
 }
+
+variable "node_subnet_ids" {
+  description = "Optional subnet IDs for managed node groups. Defaults to the cluster subnet IDs."
+  type        = list(string)
+  default     = null
+
+  validation {
+    condition = (
+      var.node_subnet_ids == null
+      ? true
+      : length(var.node_subnet_ids) > 0
+    )
+    error_message = "node_subnet_ids must be null or contain at least one subnet ID."
+  }
+}
