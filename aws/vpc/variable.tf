@@ -62,3 +62,14 @@ variable "vpc_tags" {
   description = "VPC tags"
   type        = map(string)
 }
+
+variable "nat_mode" {
+  description = "NAT topology: disabled, single, or per_az."
+  type        = string
+  default     = "disabled"
+
+  validation {
+    condition     = contains(["disabled", "single", "per_az"], var.nat_mode)
+    error_message = "nat_mode must be disabled, single, or per_az."
+  }
+}
