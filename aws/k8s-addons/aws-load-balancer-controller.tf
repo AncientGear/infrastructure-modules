@@ -1,6 +1,5 @@
 locals {
-  aws_load_balancer_controller_chart_version      = "3.5.0"
-  aws_load_balancer_controller_controller_version = "v3.5.0"
+  aws_load_balancer_controller_chart_version = "3.5.0"
 }
 
 resource "helm_release" "aws_load_balancer_controller" {
@@ -45,7 +44,7 @@ resource "helm_release" "aws_load_balancer_controller" {
 
     image = merge(
       {
-        tag = local.aws_load_balancer_controller_controller_version
+        tag = var.aws_load_balancer_controller.image_tag
       },
       var.aws_load_balancer_controller.image_repository == null ? {} : {
         repository = var.aws_load_balancer_controller.image_repository

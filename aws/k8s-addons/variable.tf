@@ -37,6 +37,7 @@ variable "aws_load_balancer_controller" {
     namespace            = optional(string, "kube-system")
     service_account_name = optional(string, "aws-load-balancer-controller")
     image_repository     = optional(string)
+    image_tag            = optional(string, "v3.5.0")
     node_selector        = optional(map(string), {})
     tolerations = optional(list(object({
       key      = string
