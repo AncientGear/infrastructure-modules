@@ -1,0 +1,5 @@
+serviceAccount:
+  roleArn: ""
+aws:
+  region: us-east-2
+  secretName: dev/dealengine/backend-runtime
