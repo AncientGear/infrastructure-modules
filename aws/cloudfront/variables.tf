@@ -37,3 +37,23 @@ variable "function_name" {
   type    = string
   default = "spa_rewrite"
 }
+
+variable "alb_origin_arn" {
+  description = "ARN of the existing internal ALB managed by Kubernetes"
+  type        = string
+}
+
+variable "vpc_origin_name" {
+  description = "Name of the CloudFront VPC origin"
+  type        = string
+}
+
+variable "frontend_release_id" {
+  description = "Published S3 release identifier: GitHub run ID and attempt"
+  type        = string
+
+  validation {
+    condition     = can(regex("^[0-9]+-[0-9]+$", var.frontend_release_id))
+    error_message = "Use the published release identifier in run_id-run_attempt format."
+  }
+}

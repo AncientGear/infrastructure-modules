@@ -1,8 +1,13 @@
 data "aws_cloudfront_cache_policy" "caching_disabled" {
   name = "Managed-CachingDisabled"
 }
+
 data "aws_cloudfront_origin_request_policy" "all_viewer_except_host" {
   name = "Managed-AllViewerExceptHostHeader"
+}
+
+data "aws_cloudfront_cache_policy" "caching_optimized" {
+  name = "Managed-CachingOptimized"
 }
 
 resource "aws_cloudfront_distribution" "s3_distribution" {
@@ -10,6 +15,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     domain_name              = var.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
     origin_id                = var.bucket_id
+    origin_path              = "/releases/${var.frontend_release_id}"
   }
 
   enabled             = true
@@ -20,28 +26,12 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
   aliases = var.aliases
 
   default_cache_behavior {
-    target_origin_id = var.bucket_id
-    allowed_methods = [
-      "GET",
-      "HEAD",
-      "OPTIONS"
-    ]
-    cached_methods = [
-      "GET",
-      "HEAD",
-      "OPTIONS"
-    ]
+    target_origin_id       = var.bucket_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
     compress               = true
-    forwarded_values {
-      query_string = false
-      cookies {
-        forward = "none"
-      }
-    }
-    min_ttl     = 0
-    default_ttl = 3600
-    max_ttl     = 86400
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_disabled.id
 
     function_association {
       event_type   = "viewer-request"
@@ -51,81 +41,38 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
 
   # Cache behavior with precedence 0
   ordered_cache_behavior {
-    path_pattern     = "/content/immutable/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = var.bucket_id
-
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 86400
-    max_ttl                = 31536000
-    compress               = true
+    path_pattern           = "/assets/*"
+    target_origin_id       = var.bucket_id
+    allowed_methods        = ["GET", "HEAD", "OPTIONS"]
+    cached_methods         = ["GET", "HEAD"]
     viewer_protocol_policy = "redirect-to-https"
-  }
-
-  # Cache behavior with precedence 1
-  ordered_cache_behavior {
-    path_pattern     = "/content/*"
-    allowed_methods  = ["GET", "HEAD", "OPTIONS"]
-    cached_methods   = ["GET", "HEAD", "OPTIONS"]
-    target_origin_id = var.bucket_id
-
-    forwarded_values {
-      query_string = false
-
-      cookies {
-        forward = "none"
-      }
-    }
-
-    min_ttl                = 0
-    default_ttl            = 3600
-    max_ttl                = 86400
     compress               = true
-    viewer_protocol_policy = "redirect-to-https"
+    cache_policy_id        = data.aws_cloudfront_cache_policy.caching_optimized.id
   }
 
   origin {
     domain_name = var.alb_origin_domain_name
     origin_id   = "backend-alb"
-    custom_origin_config {
-      http_port              = 80
-      https_port             = 443
-      origin_protocol_policy = "https-only"
-      origin_ssl_protocols   = ["TLSv1.2"]
+
+    vpc_origin_config {
+      vpc_origin_id = aws_cloudfront_vpc_origin.alb.id
     }
   }
 
-  ordered_cache_behavior {
-    path_pattern     = "/api/*"
-    target_origin_id = "backend-alb"
-    allowed_methods = [
-      "DELETE",
-      "GET",
-      "HEAD",
-      "OPTIONS",
-      "PATCH",
-      "POST",
-      "PUT"
-    ]
-    cached_methods = [
-      "GET",
-      "HEAD",
-      "OPTIONS"
-    ]
-    viewer_protocol_policy   = "redirect-to-https"
-    compress                 = true
-    cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
-    origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+  dynamic "ordered_cache_behavior" {
+    for_each = ["/api", "/api/*"]
+
+    content {
+      path_pattern           = ordered_cache_behavior.value
+      target_origin_id       = "backend-alb"
+      allowed_methods        = ["DELETE", "GET", "HEAD", "OPTIONS", "PATCH", "POST", "PUT"]
+      cached_methods         = ["GET", "HEAD", "OPTIONS"]
+      viewer_protocol_policy = "redirect-to-https"
+      compress               = true
+
+      cache_policy_id          = data.aws_cloudfront_cache_policy.caching_disabled.id
+      origin_request_policy_id = data.aws_cloudfront_origin_request_policy.all_viewer_except_host.id
+    }
   }
 
   price_class = var.price_class

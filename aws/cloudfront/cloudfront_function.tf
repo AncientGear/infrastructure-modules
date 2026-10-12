@@ -7,11 +7,11 @@ resource "aws_cloudfront_function" "spa_rewrite" {
     function handler(event) {
       var request = event.request;
       var uri = request.uri;
-      if (uri.startsWith('/api/')) {
+      if (uri === '/api' || uri.startsWith('/api/')) {
         return request;
       }
       if (uri.endsWith('/')) {
-        request.uri += 'index.html';
+        request.uri = '/index.html';
         return request;
       }
       var lastSegment = uri.split('/').pop();
