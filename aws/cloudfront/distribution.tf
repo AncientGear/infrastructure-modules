@@ -15,7 +15,7 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     domain_name              = var.bucket_regional_domain_name
     origin_access_control_id = aws_cloudfront_origin_access_control.this.id
     origin_id                = var.bucket_id
-    origin_path              = "/releases/${var.frontend_release_id}"
+    origin_path              = var.frontend_origin_mode == "current" ? "/current" : "/releases/${var.frontend_release_id}"
   }
 
   enabled             = true

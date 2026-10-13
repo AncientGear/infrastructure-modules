@@ -57,3 +57,14 @@ variable "frontend_release_id" {
     error_message = "Use the published release identifier in run_id-run_attempt format."
   }
 }
+
+variable "frontend_origin_mode" {
+  description = "S3 origin selection: immutable release or stable current prefix."
+  type        = string
+  default     = "release"
+
+  validation {
+    condition     = contains(["release", "current"], var.frontend_origin_mode)
+    error_message = "frontend_origin_mode must be release or current."
+  }
+}

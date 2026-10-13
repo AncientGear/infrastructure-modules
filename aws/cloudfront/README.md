@@ -17,8 +17,10 @@ Host header is replaced with the configured origin hostname.
 
 ## Required configuration
 
-- `frontend_release_id`: existing `run_id-run_attempt` release under
-    `releases/`, containing `index.html` and `assets/`.
+- `frontend_origin_mode`: `release` (default) serves an immutable release;
+    `current` serves the stable `current/` prefix.
+- `frontend_release_id`: release identifier in `run_id-run_attempt` format.
+    Required for compatibility; used in the origin path only in `release` mode.
 - `alb_origin_arn`: ARN of the active internal ALB.
 - `alb_origin_domain_name`: origin hostname matching its HTTPS
     certificate and Kubernetes Gateway/HTTPRoute.
@@ -38,8 +40,14 @@ groups or create frontend DNS records.
 VPC Origin networking and permissions must be checked before deployment.
 Only one Terraform owner should manage the bucket policy.
 
-Publishing files to S3 does not activate a release: promotion explicitly
-changes `frontend_release_id`. Keep prior releases for rollback.
+In `release` mode, promotion changes `frontend_release_id`.
+In `current` mode, CD promotes a validated release to `current/`;
+Terraform does not change for each frontend deployment.
+
+Populate and verify `current/` before switching origin mode.
+Publish content-hashed assets before index.html and retain older assets
+for clients using previous HTML. Promotion is not an atomic S3 operation.
+Keep immutable releases for rollback without rebuilding.
 
 Cached asset URLs must be immutable and content-hashed. Changing the
 release origin path does not invalidate existing `/assets/*` cache entries.
@@ -56,6 +64,7 @@ cache behaviors. Publish a new module tag; never move existing tags.
 
 Run from the project root:
 
+    node --test infrastructure-modules/aws/cloudfront/tests/test_origin_path.cjs
     node infrastructure-modules/aws/cloudfront/tests/test_spa_rewrite.cjs
     terraform -chdir=infrastructure-modules/aws/cloudfront fmt -check
     terraform -chdir=infrastructure-modules/aws/cloudfront validate
