@@ -32,3 +32,26 @@ variable "tags" {
   type        = map(string)
   default     = {}
 }
+
+variable "enable_promotion" {
+  description = "Enable release promotion to current and CloudFront invalidation."
+  type        = bool
+  default     = false
+}
+
+variable "cloudfront_distribution_arn" {
+  description = "Exact CloudFront distribution ARN allowed for invalidation."
+  type        = string
+  default     = null
+
+  validation {
+    condition = (
+      !var.enable_promotion ||
+      can(regex(
+        "^arn:aws:cloudfront::[0-9]{12}:distribution/[A-Z0-9]+$",
+        var.cloudfront_distribution_arn
+      ))
+    )
+    error_message = "Promotion requires an exact CloudFront distribution ARN."
+  }
+}
